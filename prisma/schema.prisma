@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Slot {
+  id              String   @id @default(uuid())
+  title           String
+  startsAt        DateTime
+  durationMinutes Int
+  createdAt       DateTime @default(now())
+  booking         Booking?
+}
+
+model Booking {
+  id                  String   @id @default(uuid())
+  slotId              String   @unique
+  slot                Slot     @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  clientName          String
+  clientEmail         String
+  confirmationMessage String
+  createdAt           DateTime @default(now())
+}
+
+model CalendarConnection {
+  id           String   @id
+  refreshToken String
+  email        String?
+  connectedAt  DateTime @default(now())
+}
